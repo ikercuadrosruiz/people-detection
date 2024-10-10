@@ -1,2 +1,1 @@
-> [!INFO]
 README
