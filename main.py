@@ -82,7 +82,7 @@ def convertBoxFormat(box):
     h = box_h * dh
     return (x,y,w,h)
 
-annotation_dir = '/kaggle/input/caltechpedestriandataset/annotations/annotations/*'
+annotation_dir = 'kaggle/input/caltechpedestriandataset/annotations/annotations/*'
 classes = ['person']
 number_of_truth_boxes = 0
 
