@@ -148,3 +148,26 @@ df_caltech_annot['frame_id'] = df_caltech_annot['image_id'].apply(lambda x: x.sp
 
 df_caltech_annot.to_csv('csv_files/frame_metadata.csv', index = False)
 df_caltech_annot
+
+# display(df_caltech_annot.head())
+
+# Filter Image Files
+df_set_video = df_caltech_annot.groupby(['set_id', 'video_id', 'split'])['image_id'].count().reset_index()
+df_set_video = df_set_video.rename(columns={'image_id':'total_image'})
+
+df_set_video_train = df_set_video[df_set_video['split']=='train'].reset_index(drop=True)
+df_set_video_val = df_set_video[df_set_video['split']=='val'].reset_index(drop=True)
+
+display(df_set_video_train.head())
+display(df_set_video_val.head())
+
+total_train_image = sum(df_set_video_train['total_image'])
+total_val_image = sum(df_set_video_val['total_image'])
+print('Number of train:', total_train_image)
+print('Number of Val:', total_val_image)
+
+df_set_video_train = df_set_video_train.groupby('set_id')['video_id'].count().reset_index()
+df_set_video_val = df_set_video_val.groupby('set_id')['video_id'].count().reset_index()
+df_set_video_count = pd.concat([df_set_video_train, df_set_video_val]).reset_index(drop=True)
+df_set_video_count = df_set_video_count.rename(columns={'video_id':'total_video'})
+display(df_set_video_count)
