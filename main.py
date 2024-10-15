@@ -171,3 +171,33 @@ df_set_video_val = df_set_video_val.groupby('set_id')['video_id'].count().reset_
 df_set_video_count = pd.concat([df_set_video_train, df_set_video_val]).reset_index(drop=True)
 df_set_video_count = df_set_video_count.rename(columns={'video_id':'total_video'})
 display(df_set_video_count)
+
+df_train_filtered = pd.DataFrame()
+df_val_filtered = pd.DataFrame()
+set_id_list = list(df_caltech_annot['set_id'].unique())
+for i, set_id in enumerate(set_id_list):
+    df_set_id = df_set_video[df_set_video['set_id']==set_id]
+    video_id_list = list(df_set_id['video_id'].unique())
+
+    for j, vid_id in enumerate(video_id_list):
+        df_video_id = df_caltech_annot[(df_caltech_annot['set_id']==set_id)&(df_caltech_annot['video_id']==vid_id)].reset_index(drop=True)
+        frame_total = df_video_id.shape[0]
+        if(i<=5): # 1000 train images
+            limit = int(round((frame_total/total_train_image)*1000, 0))
+            df_video_id = df_video_id[:limit]
+            df_train_filtered = pd.concat([df_train_filtered,df_video_id], ignore_index=True)
+        else:
+            limit = int(round((frame_total/total_val_image)*2500, 0))
+            df_video_id = df_video_id[:limit]
+            df_val_filtered = pd.concat([df_val_filtered,df_video_id], ignore_index=True)
+
+df_train_filtered = df_train_filtered.reset_index(drop=True)
+df_val_filtered = df_val_filtered.reset_index(drop=True)
+
+display(df_train_filtered)
+display(df_val_filtered)
+
+df_train_filtered.to_csv('csv_files/train_frame_filtered.csv', index=False)
+df_val_filtered.to_csv('csv_files/val_frame_filtered.csv', index=False)
+
+# 2.3 Generate Image Files
