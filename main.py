@@ -201,3 +201,30 @@ df_train_filtered.to_csv('csv_files/train_frame_filtered.csv', index=False)
 df_val_filtered.to_csv('csv_files/val_frame_filtered.csv', index=False)
 
 # 2.3 Generate Image Files
+# https://github.com/simonzachau/caltech-pedestrian-dataset-to-yolo-format-converter
+# Generate images from video files
+def save_img(dir_path, fn, i, frame):
+    cv2.imwrite('{}/{}_{}_{}.png'.format(dir_path, \
+        os.path.basename(dir_path), \
+        os.path.basename(fn).split('.')[0], \
+        f'{i:04d}'), frame)
+
+def convert_caltech(split, df):
+    # Directory path
+    print(split)
+    input_dir = '/kaggle/input/caltechpedestriandataset'
+    output_dir = 'datasets/images'
+    output_dir = os.path.join(output_dir, 'train') if split=='Train' else os.path.join(output_dir, 'val')
+    output_dir = os.path.join(output_dir, 'caltechpedestriandataset')
+    if(not os.path.exists(output_dir)):
+        os.mkdir(output_dir)
+
+    # Sets
+    sets_list = sorted(glob.glob(os.path.join(input_dir, split+'/*')))
+    print('Total sets:', len(sets_list))
+    for dname in sets_list:
+        print(dname)
+        dname2 = dname.split('/')[-1]
+        output_dir2 = os.path.join(output_dir, dname2)
+        if(not os.path.exists(output_dir2)):
+            os.mkdir(output_dir2)
